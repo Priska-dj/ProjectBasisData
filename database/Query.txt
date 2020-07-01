@@ -1,0 +1,141 @@
+create tablespace Loundry
+datafile 'D:\Semester 4\Praktikum Basis Data\Modul 1\Sistem_loundry.dbf'
+size 30M;
+
+create user Priska07039_
+identified by 07039
+default tablespace Loundry
+quota 30M on Loundry;
+
+grant all privileges to Priska07039_;
+
+conn Priska07039_/07039
+
+create table jenis_cucian
+(
+Id_jenis_cucian Integer not null,
+Nama_jenis_cucian varchar2(20),
+Harga_jenis_cucian Number(9),
+constraint PK_jenis_cucian primary key (Id_jenis_cucian)
+);
+
+create table data_pelanggan
+(
+id_pelanggan integer not null,
+id_jenis_cucian integer,
+nama_pelanggan varchar2(15),
+no_tlp number(12),
+alamat_pelanggan Varchar2(100),
+constraint PK_id_pelanggan primary key (id_pelanggan),
+constraint FK_jenis_cucian foreign key (id_jenis_cucian)
+references jenis_cucian(id_jenis_cucian)
+);
+
+
+create table transaksi_cucian
+(
+id_transaksi integer not null,
+id_pelanggan integer,
+berat_cucian integer,
+tanggal_masuk DATE,
+tanggal_pengambilan DATE,
+constraint PK_id_transaksi primary key (id_transaksi),
+constraint FK_id_pelanggan foreign key (id_pelanggan)
+references data_pelanggan(id_pelanggan)
+);
+
+
+create table transaksi_pembayaran
+(
+id_pembayaran integer not null,
+id_transaksi integer,
+Harga_total integer,
+tunai integer,
+kembalian integer,
+status varchar2(10),
+constraint PK_transaksipembayaran primary key (id_pembayaran),
+constraint FK_id_transaksi2 foreign key (id_transaksi)
+references transaksi_cucian(id_transaksi)
+);
+
+
+create sequence id_pelanggan
+minvalue 1
+maxvalue 9999
+start with 1
+increment by 1
+cache 20;
+
+create sequence id_transaksi
+minvalue 1
+maxvalue 9999
+start with 1
+increment by 1
+cache 20;
+
+create sequence id_pembayaran
+minvalue 1
+maxvalue 9999
+start with 1
+increment by 1
+cache 20;
+
+insert all
+into jenis_cucian (id_jenis_cucian, nama_jenis_cucian, harga_jenis_cucian) values (1, 'cuci-Saja', '2000')
+into jenis_cucian (id_jenis_cucian, nama_jenis_cucian, harga_jenis_cucian) values (2, 'cuci-Kering', '3000')
+into jenis_cucian (id_jenis_cucian, nama_jenis_cucian, harga_jenis_cucian) values (3, 'cuci-setrika', '6000')
+into jenis_cucian (id_jenis_cucian, nama_jenis_cucian, harga_jenis_cucian ) values (4, 'cuci-selimut', '8000')
+into jenis_cucian (id_jenis_cucian, nama_jenis_cucian, harga_jenis_cucian ) values (5, 'setrika-saja', '4000')
+select 1 from dual;
+
+insert into data_pelanggan (id_pelanggan, id_jenis_cucian, nama_pelanggan, no_tlp, alamat_pelanggan) values (id_pelanggan.nextval, 1, 'vina', '123456789', 'ngagel');
+insert into data_pelanggan (id_pelanggan, id_jenis_cucian, nama_pelanggan, no_tlp, alamat_pelanggan) values (id_pelanggan.nextval, 2, 'nata', '234567891', 'klampis');
+insert into data_pelanggan (id_pelanggan, id_jenis_cucian, nama_pelanggan, no_tlp, alamat_pelanggan) values (id_pelanggan.nextval, 3, 'kiki', '345678912', 'semolowaru');
+insert into data_pelanggan (id_pelanggan, id_jenis_cucian, nama_pelanggan, no_tlp, alamat_pelanggan) values (id_pelanggan.nextval, 4, 'koko', '456789123', 'kertajaya');
+insert into data_pelanggan (id_pelanggan, id_jenis_cucian, nama_pelanggan, no_tlp, alamat_pelanggan) values (id_pelanggan.nextval, 5, 'keke', '567891234', 'keputih');
+
+
+insert into transaksi_cucian (id_transaksi, id_pelanggan, berat_cucian, tanggal_masuk, tanggal_pengambilan) values (id_transaksi.nextval, 1, '1', to_date('15/05/2020', 'dd/mm/yyyy'), to_date('18/05/2020', 'dd/mm/yyyy'));
+insert into transaksi_cucian (id_transaksi, id_pelanggan, berat_cucian, tanggal_masuk, tanggal_pengambilan) values (id_transaksi.nextval, 2, '1', to_date('19/05/2020', 'dd/mm/yyyy'), to_date('22/05/2020', 'dd/mm/yyyy'));
+insert into transaksi_cucian (id_transaksi, id_pelanggan, berat_cucian, tanggal_masuk, tanggal_pengambilan) values (id_transaksi.nextval, 3, '1', to_date('23/05/2020', 'dd/mm/yyyy'), to_date('26/05/2020', 'dd/mm/yyyy'));
+insert into transaksi_cucian (id_transaksi, id_pelanggan, berat_cucian, tanggal_masuk, tanggal_pengambilan) values (id_transaksi.nextval, 4, '1', to_date('15/06/2020', 'dd/mm/yyyy'), to_date('18/06/2020', 'dd/mm/yyyy'));
+insert into transaksi_cucian (id_transaksi, id_pelanggan, berat_cucian, tanggal_masuk, tanggal_pengambilan) values (id_transaksi.nextval, 5, '1', to_date('19/06/2020', 'dd/mm/yyyy'), to_date('22/06/2020', 'dd/mm/yyyy'));
+
+
+insert into transaksi_pembayaran (id_pembayaran, id_transaksi, harga_total, tunai, kembalian, status) values (id_pembayaran.nextval, 1, '2000', '5000', '3000', 'Lunas');
+insert into transaksi_pembayaran (id_pembayaran, id_transaksi, harga_total, tunai, kembalian, status) values (id_pembayaran.nextval, 2, '3000', '5000', '2000', 'Lunas');
+insert into transaksi_pembayaran (id_pembayaran, id_transaksi, harga_total, tunai, kembalian, status) values (id_pembayaran.nextval, 3, '6000', '10000', '4000', 'Lunas');
+insert into transaksi_pembayaran (id_pembayaran, id_transaksi, harga_total, tunai, kembalian, status) values (id_pembayaran.nextval, 4, '5000', '10000', '5000', 'Lunas');
+insert into transaksi_pembayaran (id_pembayaran, id_transaksi, harga_total, tunai, kembalian, status) values (id_pembayaran.nextval, 5, '4000', '5000', '1000', 'Lunas');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
